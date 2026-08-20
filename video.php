@@ -1283,12 +1283,27 @@ if (isset($_GET['action'])) {
                     hlsPlayerInstance.attachMedia(previewVideo);
                     hlsPlayerInstance.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
                         if (data.levels && data.levels.length > 0) {
-                            availableQualities = data.levels.map((level, index) => ({
-                                id: index,
-                                label: `${level.height || 'Bilinmeyen'}p (${Math.round((level.bitrate || 0)/1000)} kbps)`,
-                                height: level.height,
-                                url: url
-                            }));
+                            availableQualities = data.levels.map((level, index) => {
+                                let levelUrl = url;
+                                if (level.url) {
+                                    if (Array.isArray(level.url) && level.url.length > 0) {
+                                        levelUrl = level.url[0];
+                                    } else if (typeof level.url === 'string') {
+                                        levelUrl = level.url;
+                                    }
+                                }
+                                try {
+                                    levelUrl = new URL(levelUrl, url).href;
+                                } catch (e) {
+                                    console.warn('URL resolving error:', e);
+                                }
+                                return {
+                                    id: index,
+                                    label: `${level.height || 'Bilinmeyen'}p (${Math.round((level.bitrate || 0)/1000)} kbps)`,
+                                    height: level.height,
+                                    url: levelUrl
+                                };
+                            });
                         }
                         renderFormatOptions(availableQualities.length > 0 ? availableQualities : [{ label: 'Orijinal HLS Akışı', url: url }]);
                         forceRenderFirstFrame();
