@@ -1666,7 +1666,15 @@ if (isset($_GET['action'])) {
                     return;
                 }
 
-                const targetUrl = selectedFormat.url;
+                let targetUrl = selectedFormat.url;
+                if (targetUrl.includes('action=proxy') && targetUrl.includes('url=')) {
+                    try {
+                        const urlParams = new URLSearchParams(targetUrl.split('?')[1]);
+                        targetUrl = urlParams.get('url') || targetUrl;
+                    } catch (e) {
+                        console.warn('Failed to parse proxy URL:', e);
+                    }
+                }
                 const cleanName = decodeURIComponent(encodeURIComponent(videoTitle.textContent || 'Video'));
 
                 // Check if it's an M3U8 file
