@@ -12,9 +12,6 @@ if (isset($_GET['action'])) {
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_TIMEOUT, 15);
         curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36');
-        if (strpos($url, 'eporner.com') !== false) {
-            curl_setopt($ch, CURLOPT_COOKIE, 'age_verified=1');
-        }
         
         if (!empty($_GET['proxy'])) {
             $px = $_GET['proxy'];
@@ -151,9 +148,6 @@ if (isset($_GET['action'])) {
             $headers[] = 'Range: ' . $_SERVER['HTTP_RANGE'];
         }
         $headers[] = 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36';
-        if (strpos($target_url, 'eporner.com') !== false) {
-            $headers[] = 'Cookie: age_verified=1';
-        }
         
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -218,9 +212,6 @@ if (isset($_GET['action'])) {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36');
-        if (strpos($target_url, 'eporner.com') !== false) {
-            curl_setopt($ch, CURLOPT_COOKIE, 'age_verified=1');
-        }
         
         curl_exec($ch);
         curl_close($ch);
@@ -1675,15 +1666,7 @@ if (isset($_GET['action'])) {
                     return;
                 }
 
-                let targetUrl = selectedFormat.url;
-                if (targetUrl.includes('action=proxy') && targetUrl.includes('url=')) {
-                    try {
-                        const urlParams = new URLSearchParams(targetUrl.split('?')[1]);
-                        targetUrl = urlParams.get('url') || targetUrl;
-                    } catch (e) {
-                        console.warn('Failed to parse proxy URL:', e);
-                    }
-                }
+                const targetUrl = selectedFormat.url;
                 const cleanName = decodeURIComponent(encodeURIComponent(videoTitle.textContent || 'Video'));
 
                 // Check if it's an M3U8 file
