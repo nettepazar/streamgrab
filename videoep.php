@@ -14,7 +14,12 @@ if (isset($_GET['action'])) {
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_TIMEOUT, 15);
         curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36');
-        curl_setopt($ch, CURLOPT_COOKIE, 'age_verified=1; cookies_accepted=1');
+        
+        $parsed_ref = parse_url($url);
+        $referer = ($parsed_ref['scheme'] ?? 'https') . '://' . ($parsed_ref['host'] ?? 'www.eporner.com');
+        curl_setopt($ch, CURLOPT_REFERER, $referer);
+        curl_setopt($ch, CURLOPT_COOKIE, 'age_verified=1');
+        
         $html = curl_exec($ch);
         curl_close($ch);
         return $html;
